@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Вход — студенческий совет{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Шаг 1. Укажите почту</h2>
+  <p class="lead">На адрес придёт код подтверждения. Его нужно будет ввести на следующей странице.</p>
+  <form id="form-request" class="form" autocomplete="on">
+    <label for="email">Электронная почта</label>
+    <input type="email" id="email" name="email" required placeholder="you@school.edu">
+    <button type="submit" class="btn primary">Получить код</button>
+  </form>
+  <p id="msg-request" class="msg" role="status" aria-live="polite"></p>
+  <p class="next-hint" id="next-wrap" hidden>
+    <a class="btn secondary" id="link-verify" href="/verify">Ввести код →</a>
+  </p>
+</section>
+
+<section class="card muted">
+  <h3>Кандидаты</h3>
+  <ul class="candidates-preview">
+    {% for c in candidates %}
+    <li><strong>{{ c.name }}</strong> — {{ c.note }}</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<script>
+(function () {
+  const form = document.getElementById('form-request');
+  const msg = document.getElementById('msg-request');
+  const nextWrap = document.getElementById('next-wrap');
+  const linkVerify = document.getElementById('link-verify');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.textContent = '';
+    msg.className = 'msg';
+    const email = document.getElementById('email').value.trim();
+    const r = await fetch('/api/request-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+      credentials: 'same-origin',
+    });
+    const data = await r.json().catch(() => ({}));
+    if (r.ok) {
+      msg.textContent = data.message || 'Код отправлен.';
+      msg.classList.add('ok');
+      const q = encodeURIComponent(email);
+      linkVerify.href = '/verify?email=' + q;
+      nextWrap.hidden = false;
+    } else {
+      msg.textContent = data.detail || 'Ошибка запроса кода.';
+      msg.classList.add('err');
+    }
+  });
+})();
+</script>
+{% endblock %}

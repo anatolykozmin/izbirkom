@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Подтверждение почты{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Шаг 2. Введите код из письма</h2>
+  <form id="form-verify" class="form" autocomplete="one-time-code">
+    <label for="email">Почта</label>
+    <input type="email" id="email" name="email" required>
+    <label for="code">Код</label>
+    <input type="text" id="code" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="12" required placeholder="000000" autocomplete="one-time-code">
+    <button type="submit" class="btn primary">Подтвердить и перейти к голосованию</button>
+  </form>
+  <p id="msg-verify" class="msg" role="status" aria-live="polite"></p>
+  <p><a href="/">← Назад</a></p>
+</section>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const pre = params.get('email');
+  if (pre) document.getElementById('email').value = pre;
+  const form = document.getElementById('form-verify');
+  const msg = document.getElementById('msg-verify');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.textContent = '';
+    msg.className = 'msg';
+    const email = document.getElementById('email').value.trim();
+    const code = document.getElementById('code').value.trim().replace(/\s/g, '');
+    const r = await fetch('/api/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code }),
+      credentials: 'same-origin',
+    });
+    const data = await r.json().catch(() => ({}));
+    if (r.ok) {
+      window.location.href = '/ballot';
+      return;
+    }
+    const detail = data.detail;
+    msg.textContent = typeof detail === 'string' ? detail : (Array.isArray(detail) ? detail.map(d => d.msg).join(' ') : 'Ошибка подтверждения.');
+    msg.classList.add('err');
+  });
+})();
+</script>
+{% endblock %}
