@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Результаты голосования{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="admin-header">
+    <h2>Результаты голосования</h2>
+    <form method="post" action="/admin/logout" style="margin:0;">
+      <button type="submit" class="btn ghost">Выйти</button>
+    </form>
+  </div>
+
+  <p class="lead">Всего проголосовало: <strong>{{ total }}</strong> человек</p>
+
+  <div class="results">
+    {% for r in results %}
+    <div class="result-row">
+      <div class="result-info">
+        <span class="result-name">{{ r.name }}</span>
+        <span class="result-count">{{ r.votes }} {{ r.votes_label }}</span>
+      </div>
+      <div class="result-bar-wrap">
+        <div class="result-bar" style="width: {{ r.pct }}%"></div>
+      </div>
+      <span class="result-pct">{{ r.pct }}%</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

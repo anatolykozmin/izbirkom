@@ -1,16 +1,18 @@
+import hashlib
+import hmac
 import logging
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, Response
+from fastapi import BackgroundTasks, Depends, FastAPI, Form, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
@@ -53,6 +55,16 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Студенческий совет — голосование", lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+    return response
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
@@ -208,3 +220,91 @@ async def api_vote(
 async def api_logout(response: Response):
     response.delete_cookie(COOKIE_NAME, path="/")
     return {"ok": True}
+
+
+# ── Admin ────────────────────────────────────────────────────────────────────
+
+ADMIN_COOKIE = "admin_session"
+
+
+def _check_admin(request: Request) -> bool:
+    token = request.cookies.get(ADMIN_COOKIE)
+    if not token:
+        return False
+    settings = get_settings()
+    expected = hmac.new(
+        settings.secret_key.encode(), b"admin", hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(token, expected)
+
+
+@app.get("/admin/login", response_class=HTMLResponse)
+async def admin_login_page(request: Request):
+    if _check_admin(request):
+        return RedirectResponse(url="/admin", status_code=302)
+    return templates.TemplateResponse("admin_login.html", {"request": request, "error": None})
+
+
+@app.post("/admin/login", response_class=HTMLResponse)
+@limiter.limit("10/minute")
+async def admin_login_post(request: Request, response: Response, password: str = Form(...)):
+    settings = get_settings()
+    if hmac.compare_digest(password, settings.admin_password):
+        token = hmac.new(settings.secret_key.encode(), b"admin", hashlib.sha256).hexdigest()
+        response = RedirectResponse(url="/admin", status_code=302)
+        response.set_cookie(
+            ADMIN_COOKIE,
+            token,
+            httponly=True,
+            secure=settings.cookie_secure,
+            samesite="lax",
+            max_age=3600,
+        )
+        return response
+    return templates.TemplateResponse(
+        "admin_login.html", {"request": request, "error": "Неверный пароль"}, status_code=401
+    )
+
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_panel(request: Request, session: AsyncSession = Depends(get_session)):
+    if not _check_admin(request):
+        return RedirectResponse(url="/admin/login", status_code=302)
+
+    total = await session.scalar(select(func.count()).select_from(Vote))
+    rows = await session.execute(
+        select(Vote.candidate_id, func.count(Vote.id).label("cnt"))
+        .group_by(Vote.candidate_id)
+    )
+    counts = {row.candidate_id: row.cnt for row in rows}
+
+    def votes_label(n: int) -> str:
+        if 11 <= n % 100 <= 14:
+            return "голосов"
+        r = n % 10
+        if r == 1:
+            return "голос"
+        if 2 <= r <= 4:
+            return "голоса"
+        return "голосов"
+
+    results = [
+        {
+            "id": c["id"],
+            "name": c["name"],
+            "votes": counts.get(c["id"], 0),
+            "pct": round(counts.get(c["id"], 0) / total * 100) if total else 0,
+            "votes_label": votes_label(counts.get(c["id"], 0)),
+        }
+        for c in CANDIDATES
+    ]
+    return templates.TemplateResponse(
+        "admin.html",
+        {"request": request, "results": results, "total": total},
+    )
+
+
+@app.post("/admin/logout")
+async def admin_logout(response: Response):
+    response.delete_cookie(ADMIN_COOKIE, path="/")
+    return RedirectResponse(url="/admin/login", status_code=302)

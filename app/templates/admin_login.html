@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Вход в панель администратора{% endblock %}
+{% block content %}
+<section class="card" style="max-width:22rem;margin:0 auto;">
+  <h2>Панель администратора</h2>
+  <p class="lead">Введите пароль для просмотра результатов.</p>
+  <form method="post" action="/admin/login" class="form">
+    <label for="password">Пароль</label>
+    <input type="password" id="password" name="password" required autofocus>
+    {% if error %}
+    <p class="msg err">{{ error }}</p>
+    {% endif %}
+    <button type="submit" class="btn primary">Войти</button>
+  </form>
+</section>
+{% endblock %}

@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     otp_expire_minutes: int = 15
     otp_length: int = 6
 
+    # Пароль для доступа в /admin. Задайте через переменную ADMIN_PASSWORD в Amvera.
+    admin_password: str = "change-admin-password"
+
 
 @lru_cache
 def get_settings() -> Settings:
