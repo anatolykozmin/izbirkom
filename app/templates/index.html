@@ -3,10 +3,10 @@
 {% block content %}
 <section class="card">
   <h2>Шаг 1. Укажите почту</h2>
-  <p class="lead">На адрес придёт код подтверждения. Его нужно будет ввести на следующей странице.</p>
+  <p class="lead">Введите корпоративную почту вида <strong>123456@edu.fa.ru</strong> или <strong>1234567@edu.fa.ru</strong>. На неё придёт код подтверждения.</p>
   <form id="form-request" class="form" autocomplete="on">
     <label for="email">Электронная почта</label>
-    <input type="email" id="email" name="email" required placeholder="you@school.edu">
+    <input type="email" id="email" name="email" required placeholder="123456@edu.fa.ru">
     <button type="submit" class="btn primary">Получить код</button>
   </form>
   <p id="msg-request" class="msg" role="status" aria-live="polite"></p>
