@@ -1,0 +1,15 @@
+meta:
+  environment: python
+  toolchain:
+    name: pip
+    version: "3.12"
+
+build:
+  requirementsPath: requirements.txt
+
+run:
+  # Amvera запускает uvicorn из /app; порт 5000 слушается внутри контейнера.
+  command: uvicorn app.main:app --host 0.0.0.0 --port 5000
+  containerPort: 5000
+  # /data — постоянное хранилище Amvera: файлы не пропадают при пересборке.
+  persistenceMount: /data

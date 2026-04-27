@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     # When True, emails are printed to stdout instead of SMTP (good for local dev)
     email_debug: bool = True
 
+    # На Amvera задайте DATABASE_URL=sqlite+aiosqlite:////data/votes.db через переменные окружения.
     database_url: str = "sqlite+aiosqlite:///./data/votes.db"
 
     # Включите на продакшене за HTTPS
