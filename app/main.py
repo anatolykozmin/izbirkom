@@ -33,8 +33,9 @@ from app.security import (
 log = logging.getLogger(__name__)
 
 CANDIDATES = (
-    {"id": 1, "name": "Кандидат 1", "note": "Ссылка на программу первого кандидата тут"},
-    {"id": 2, "name": "Кандидат 2", "note": "Ссылка на программу второго кандидата тут"},
+    {"id": 1, "name": "Раф на кокосовом", "note": ""},
+    {"id": 2, "name": "Раф на банановом", "note": ""},
+    {"id": 3, "name": "Против всех", "note": ""},
 )
 
 COOKIE_NAME = "session"
@@ -204,7 +205,7 @@ async def api_vote(
     session: AsyncSession = Depends(get_session),
     voter_email: str = Depends(require_voter),
 ):
-    if body.candidate_id not in (1, 2):
+    if body.candidate_id not in {c["id"] for c in CANDIDATES}:
         raise HTTPException(status_code=400, detail="Некорректный кандидат")
 
     result = await session.execute(select(Vote).where(Vote.email == voter_email))

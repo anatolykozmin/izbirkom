@@ -11,4 +11,4 @@ class VerifyBody(BaseModel):
 
 
 class VoteBody(BaseModel):
-    candidate_id: int = Field(ge=1, le=2)
+    candidate_id: int = Field(ge=1, le=100)
