@@ -7,6 +7,32 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+  <div class="bg-layer" aria-hidden="true">
+    <div class="bg-grid-tl"></div>
+    <div class="bg-grid-br"></div>
+    <svg class="bg-deco" viewBox="0 0 100 160" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Верхние волны (в самом верху, не перекрывают шапку) -->
+      <path d="M -2,6 C 14,2 32,1 48,5 C 62,9 73,6 102,1"
+            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.95"
+            vector-effect="non-scaling-stroke"/>
+      <path d="M -2,10 C 14,6 32,5 48,9 C 62,13 73,10 102,5"
+            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"
+            vector-effect="non-scaling-stroke"/>
+      <!-- Нижние волны -->
+      <path d="M -2,150 C 22,143 45,152 65,145 C 78,140 88,144 102,136"
+            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"
+            vector-effect="non-scaling-stroke"/>
+      <path d="M -2,154 C 22,147 45,156 65,149 C 78,144 88,148 102,140"
+            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"
+            vector-effect="non-scaling-stroke"/>
+      <!-- Звёзды: 2 сверху-слева, 2 снизу-справа (меньше декора) -->
+      <path d="M11,16 L11.6,22.4 L18,23 L11.6,23.6 L11,30 L10.4,23.6 L4,23 L10.4,22.4 Z" fill="white" opacity="0.95"/>
+      <path d="M26,4 L26.35,7.65 L30,8 L26.35,8.35 L26,12 L25.65,8.35 L22,8 L25.65,7.65 Z" fill="white" opacity="0.75"/>
+      <path d="M58,128 L58.6,134.4 L65,135 L58.6,135.6 L58,142 L57.4,135.6 L51,135 L57.4,134.4 Z" fill="white" opacity="0.95"/>
+      <path d="M82,144 L82.35,147.65 L86,148 L82.35,148.35 L82,152 L81.65,147.65 L78,148 L81.65,147.65 Z" fill="white" opacity="0.75"/>
+    </svg>
+  </div>
+
   <div class="page">
     <header class="header">
       <h1>Студенческий совет</h1>
@@ -16,7 +42,7 @@
       {% block content %}{% endblock %}
     </main>
     <footer class="footer">
-      <span>Один голос на один подтверждённый адрес электронной почты.</span>
+      <span>Один голос на один подтверждённый адрес</span>
     </footer>
   </div>
 </body>

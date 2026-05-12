@@ -2,13 +2,20 @@
 {% block title %}Вход — студенческий совет{% endblock %}
 {% block content %}
 <section class="card">
-  <h2>Шаг 1. Укажите почту</h2>
-  <p class="lead">Введите корпоративную почту вида <strong>123456@edu.fa.ru</strong> или <strong>1234567@edu.fa.ru</strong>. На неё придёт код подтверждения.</p>
+  <div class="step-header">
+    <span class="step-num">01</span>
+    <div class="step-meta">
+      <p class="step-kicker">Шаг первый</p>
+      <h2 class="step-title">Укажите почту</h2>
+    </div>
+  </div>
+  <p class="lead">Введите корпоративную почту вида <strong>123456@edu.fa.ru</strong> или <strong>1234567@edu.fa.ru</strong> — на неё придёт код подтверждения.</p>
   <form id="form-request" class="form" autocomplete="on">
     <label for="email">Электронная почта</label>
     <input type="email" id="email" name="email" required placeholder="123456@edu.fa.ru">
     <button type="submit" class="btn primary">Получить код</button>
   </form>
+  <p class="hint">Если письмо не пришло за минуту — проверьте папку <strong>«Спам»</strong>.</p>
   <p id="msg-request" class="msg" role="status" aria-live="polite"></p>
   <p class="next-hint" id="next-wrap" hidden>
     <a class="btn secondary" id="link-verify" href="/verify">Ввести код →</a>
@@ -16,10 +23,10 @@
 </section>
 
 <section class="card muted">
-  <h3>Кандидаты</h3>
+  <h3 class="card-title">Кандидаты</h3>
   <ul class="candidates-preview">
     {% for c in candidates %}
-    <li><strong>{{ c.name }}</strong> — {{ c.note }}</li>
+    <li><strong>{{ c.name }}</strong>{% if c.note %} <span>— {{ c.note }}</span>{% endif %}</li>
     {% endfor %}
   </ul>
 </section>

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/anatolij/CT/izbirkom/app/static/fonts)",
+      "Bash(curl -sI http://127.0.0.1:8080/static/fonts/Philosopher-Regular.ttf)",
+      "Bash(curl -sI http://127.0.0.1:8080/static/fonts/Minsk-regular.otf)",
+      "Bash(curl -sI http://127.0.0.1:8080/static/fonts/Celaraz-Italic.ttf)",
+      "Bash(curl -s -o /dev/null -w \"Главная: %{http_code}\\\\n\" http://127.0.0.1:8080/)",
+      "Bash(curl -s -o /dev/null -w \"Verify:  %{http_code}\\\\n\" http://127.0.0.1:8080/verify)",
+      "Bash(curl -s -o /dev/null -w \"Admin:   %{http_code}\\\\n\" http://127.0.0.1:8080/admin/login)",
+      "Bash(curl -s -o /dev/null -w \"CSS:     %{http_code}\\\\n\" http://127.0.0.1:8080/static/style.css)",
+      "Bash(open http://127.0.0.1:8080/)",
+      "Bash(curl -s http://127.0.0.1:8080/)"
+    ],
+    "additionalDirectories": [
+      "/Users/anatolij/CT/izbirkom/app/static"
+    ]
+  }
+}

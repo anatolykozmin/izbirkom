@@ -3,21 +3,35 @@
 {% block content %}
 <section class="card">
   {% if already_voted %}
-  <h2>Вы уже проголосовали</h2>
-  <p class="lead">Ваш выбор зафиксирован. Спасибо за участие.</p>
-  <p>Выбранный кандидат: <strong id="prev-choice">
+  <div class="step-header">
+    <span class="step-num done">✓</span>
+    <div class="step-meta">
+      <p class="step-kicker">Голос принят</p>
+      <h2 class="step-title">Спасибо за участие</h2>
+    </div>
+  </div>
+  <p class="lead">Ваш выбор зафиксирован. Изменить голос нельзя.</p>
+  <p class="voted-for">Вы выбрали:
+    <strong>
     {% for c in candidates %}
       {% if c.id == voted_for %}{{ c.name }}{% endif %}
     {% endfor %}
-  </strong></p>
+    </strong>
+  </p>
   {% else %}
-  <h2>Шаг 3. Голосование</h2>
-  <p class="lead">Выберите одного кандидата. Изменить голос после отправки нельзя.</p>
+  <div class="step-header">
+    <span class="step-num">03</span>
+    <div class="step-meta">
+      <p class="step-kicker">Шаг третий</p>
+      <h2 class="step-title">Сделайте выбор</h2>
+    </div>
+  </div>
+  <p class="lead">Выберите один вариант. После отправки изменить голос нельзя.</p>
   <div class="ballot">
     {% for c in candidates %}
     <article class="candidate">
       <h3>{{ c.name }}</h3>
-      <p>{{ c.note }}</p>
+      {% if c.note %}<p>{{ c.note }}</p>{% endif %}
       <button type="button" class="btn primary vote-btn" data-id="{{ c.id }}">Голосовать</button>
     </article>
     {% endfor %}

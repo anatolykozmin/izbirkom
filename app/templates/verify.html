@@ -2,16 +2,23 @@
 {% block title %}Подтверждение почты{% endblock %}
 {% block content %}
 <section class="card">
-  <h2>Шаг 2. Введите код из письма</h2>
+  <div class="step-header">
+    <span class="step-num">02</span>
+    <div class="step-meta">
+      <p class="step-kicker">Шаг второй</p>
+      <h2 class="step-title">Введите код из письма</h2>
+    </div>
+  </div>
+  <p class="lead">Шестизначный код отправлен на указанный адрес. Если письма нет во входящих — посмотрите в папке <strong>«Спам»</strong>.</p>
   <form id="form-verify" class="form" autocomplete="one-time-code">
     <label for="email">Почта</label>
     <input type="email" id="email" name="email" required placeholder="123456@edu.fa.ru">
-    <label for="code">Код</label>
+    <label for="code">Код подтверждения</label>
     <input type="text" id="code" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="12" required placeholder="000000" autocomplete="one-time-code">
-    <button type="submit" class="btn primary">Подтвердить и перейти к голосованию</button>
+    <button type="submit" class="btn primary">Подтвердить</button>
   </form>
   <p id="msg-verify" class="msg" role="status" aria-live="polite"></p>
-  <p><a href="/">← Назад</a></p>
+  <p class="back-link"><a href="/">← Запросить новый код</a></p>
 </section>
 
 <script>

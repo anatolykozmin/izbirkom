@@ -1,252 +1,441 @@
+/* ── Шрифты ─────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Philosopher';
+  src: url('/static/fonts/Philosopher-Regular.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Minsk: только кириллица — у файла нет глифа «@» и Latin */
+@font-face {
+  font-family: 'Minsk';
+  src: url('/static/fonts/Minsk-regular.otf') format('opentype');
+  unicode-range: U+0400-04FF, U+0500-052F;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Celaraz';
+  src: url('/static/fonts/Celaraz-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Палитра ─────────────────────────────────────────────── */
 :root {
-  --bg: #0f1419;
-  --surface: #1a2332;
-  --border: #2d3a4f;
-  --text: #e8eef7;
-  --muted: #8b9cb3;
-  --accent: #3d8bfd;
-  --accent-dim: #2563c4;
-  --danger: #f87171;
-  --ok: #4ade80;
-  --radius: 12px;
-  --font: "Segoe UI", system-ui, sans-serif;
+  --ink:        #0E0E3F;
+  --ink-2:      #4B4B7A;
+  --ink-3:      #9090B0;
+  --paper:      #FBF8FE;
+  --paper-2:    #F2EDFA;
+  --line:       #E3DCF1;
+  --blue:       #3535CC;
+  --red:        #D43030;
+  --ok:         #1A9954;
+  --danger:     #C72525;
+
+  --font-head:   'Philosopher', Georgia, 'Times New Roman', serif;
+  --font-body:   'Minsk', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --font-accent: 'Celaraz', 'Philosopher', Georgia, serif;
 }
 
-* {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
+/* ── Фон-постер ──────────────────────────────────────────── */
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: var(--font);
-  background: radial-gradient(ellipse 120% 80% at 50% -20%, #1e3a5f 0%, var(--bg) 55%);
-  color: var(--text);
+  font-family: var(--font-body);
+  color: var(--ink);
+  background-color: #6050B8;
+  background-image:
+    radial-gradient(ellipse 78% 65% at  0%   0%, #3535CC 0%, transparent 55%),
+    radial-gradient(ellipse 78% 65% at 100% 100%, #D43030 0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at  55%  45%, rgba(255,255,255,0.20) 0%, transparent 65%);
+  overflow-x: hidden;
 }
 
+/* ── Декорация фона ──────────────────────────────────────── */
+.bg-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+.bg-grid-tl, .bg-grid-br {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(-22deg, transparent 0 22px, rgba(255,255,255,0.22) 22px 23px),
+    repeating-linear-gradient( 68deg, transparent 0 22px, rgba(255,255,255,0.22) 22px 23px);
+}
+
+.bg-grid-tl {
+  -webkit-mask-image: radial-gradient(ellipse 60% 52% at 0% 0%, black 0%, transparent 100%);
+          mask-image: radial-gradient(ellipse 60% 52% at 0% 0%, black 0%, transparent 100%);
+}
+
+.bg-grid-br {
+  -webkit-mask-image: radial-gradient(ellipse 60% 52% at 100% 100%, black 0%, transparent 100%);
+          mask-image: radial-gradient(ellipse 60% 52% at 100% 100%, black 0%, transparent 100%);
+}
+
+.bg-deco { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ── Раскладка ───────────────────────────────────────────── */
 .page {
-  max-width: 42rem;
+  position: relative;
+  z-index: 1;
+  max-width: 36rem;
   margin: 0 auto;
-  padding: 2rem 1.25rem 4rem;
+  padding: clamp(4.5rem, 13vh, 7rem) 1.25rem 5rem;
 }
 
+/* ── Шапка постера ───────────────────────────────────────── */
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
+  color: white;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 1.75rem;
+  font-family: var(--font-head);
+  font-size: clamp(2.1rem, 7vw, 2.8rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  line-height: 1.05;
+  letter-spacing: 0.005em;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.45);
 }
 
 .tagline {
-  margin: 0.35rem 0 0;
-  color: var(--muted);
-  font-size: 0.95rem;
+  margin: 0.55rem 0 0;
+  font-family: var(--font-accent);
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
 }
 
 .main {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
+/* ── Карточка: «бумага» ──────────────────────────────────── */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem 1.35rem;
+  background: var(--paper);
+  border-radius: 22px;
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+    0 24px 60px -18px rgba(20, 10, 60, 0.45),
+    0 8px 24px -10px rgba(20, 10, 60, 0.28);
 }
 
 .card.muted {
-  opacity: 0.92;
+  background: rgba(251, 248, 254, 0.88);
 }
 
-.card h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.2rem;
-}
-
-.card h3 {
-  margin: 0 0 0.75rem;
-  font-size: 1rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.lead {
-  margin: 0 0 1rem;
-  color: var(--muted);
-  line-height: 1.5;
-  font-size: 0.95rem;
-}
-
-.form {
+/* ── Шапка шага: большая цифра-якорь ─────────────────────── */
+.step-header {
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--line);
 }
+
+.step-num {
+  flex: 0 0 auto;
+  font-family: var(--font-head);
+  font-size: clamp(3.5rem, 13vw, 4.6rem);
+  line-height: 0.85;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.step-num.done {
+  color: var(--ok);
+  font-size: clamp(3rem, 11vw, 4rem);
+}
+
+.step-meta { min-width: 0; }
+
+.step-kicker {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-accent);
+  font-size: 1rem;
+  color: var(--red);
+  letter-spacing: 0.02em;
+}
+
+.step-title {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: clamp(1.35rem, 5vw, 1.65rem);
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+/* ── Заголовок муторной карточки (без шага) ──────────────── */
+.card-title {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ── Текст ───────────────────────────────────────────────── */
+.lead {
+  margin: 0 0 1.3rem;
+  color: var(--ink-2);
+  line-height: 1.55;
+  font-size: 1rem;
+}
+
+.lead strong { color: var(--ink); font-weight: 700; }
+
+.voted-for {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  background: var(--paper-2);
+  border-radius: 12px;
+  color: var(--ink-2);
+}
+
+.voted-for strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.back-link {
+  margin: 1rem 0 0;
+  font-size: 0.92rem;
+}
+
+/* ── Форма ───────────────────────────────────────────────── */
+.form { display: flex; flex-direction: column; gap: 0.5rem; }
 
 .form label {
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-family: var(--font-accent);
+  font-size: 0.95rem;
+  color: var(--blue);
+  margin-top: 0.4rem;
 }
+
+.form label:first-child { margin-top: 0; }
 
 .form input {
-  padding: 0.65rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: white;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  transition: border-color 0.18s, box-shadow 0.18s;
 }
+
+.form input::placeholder { color: var(--ink-3); }
 
 .form input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(53, 53, 204, 0.12);
 }
 
+/* ── Кнопки ──────────────────────────────────────────────── */
 .btn {
   display: inline-block;
-  padding: 0.65rem 1rem;
-  border-radius: 8px;
+  padding: 0.92rem 1.5rem;
+  border-radius: 12px;
   border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
-  font-family: inherit;
+  font-family: var(--font-body);
+  transition: transform 0.1s, background-color 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.2s;
+  margin-top: 0.6rem;
 }
+
+.btn:active { transform: scale(0.985); }
 
 .btn.primary {
-  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dim) 100%);
-  color: #fff;
+  background: var(--ink);
+  color: white;
 }
 
-.btn.primary:hover {
-  filter: brightness(1.08);
-}
+.btn.primary:hover { background: #1B1B6A; }
 
 .btn.secondary {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--border);
+  background: white;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
 }
 
-.btn.secondary:hover {
-  border-color: var(--accent);
-}
+.btn.secondary:hover { border-color: var(--blue); color: var(--blue); }
 
 .btn.ghost {
   background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--border);
+  color: var(--ink-3);
+  border: 1px solid var(--line);
 }
 
-.btn.ghost:hover {
-  color: var(--text);
-}
+.btn.ghost:hover { color: var(--ink); border-color: var(--ink-3); }
 
+/* ── Сообщения ───────────────────────────────────────────── */
 .msg {
-  min-height: 1.25rem;
+  min-height: 1.3rem;
+  font-size: 0.92rem;
+  margin: 0.7rem 0 0;
+}
+.msg.ok  { color: var(--ok); }
+.msg.err { color: var(--danger); }
+
+.next-hint { margin-top: 1rem; }
+
+.hint {
+  margin: 0.9rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background: var(--paper-2);
+  border-left: 3px solid var(--red);
+  border-radius: 4px 10px 10px 4px;
   font-size: 0.9rem;
-}
-
-.msg.ok {
-  color: var(--ok);
-}
-
-.msg.err {
-  color: var(--danger);
-}
-
-.next-hint {
-  margin-top: 1rem;
-}
-
-.candidates-preview {
-  margin: 0;
-  padding-left: 1.2rem;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.ballot {
-  display: grid;
-  gap: 1rem;
-}
-
-@media (min-width: 520px) {
-  .ballot {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.candidate {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-.candidate h3 {
-  margin: 0 0 0.35rem;
-  color: var(--text);
-  font-size: 1.05rem;
-}
-
-.candidate p {
-  margin: 0 0 0.85rem;
-  font-size: 0.88rem;
-  color: var(--muted);
+  color: var(--ink-2);
   line-height: 1.45;
 }
 
-.candidate .btn {
-  width: 100%;
+.hint strong { color: var(--ink); font-weight: 700; }
+
+/* ── Список кандидатов на главной ────────────────────────── */
+.candidates-preview {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
+.candidates-preview li {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.candidates-preview li:last-child { border-bottom: none; }
+
+.candidates-preview strong {
+  font-family: var(--font-head);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── Бюллетень ───────────────────────────────────────────── */
+.ballot { display: grid; gap: 0.8rem; }
+
+@media (min-width: 560px) {
+  .ballot { grid-template-columns: repeat(3, 1fr); }
+}
+
+.candidate {
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 1rem;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  transition: border-color 0.18s, transform 0.12s;
+}
+
+.candidate:hover { border-color: var(--blue); }
+
+.candidate h3 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.candidate p {
+  margin: 0 0 0.9rem;
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  line-height: 1.45;
+}
+
+.candidate .btn { width: 100%; margin-top: auto; }
+
+/* ── Строка выхода ───────────────────────────────────────── */
 .logout-row {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
+  margin: 1.5rem 0 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
 }
 
+/* ── Подвал ──────────────────────────────────────────────── */
 .footer {
-  margin-top: 2.5rem;
+  margin-top: 3rem;
   text-align: center;
-  font-size: 0.8rem;
-  color: var(--muted);
+  font-family: var(--font-accent);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* Admin */
+/* ── Ссылки ──────────────────────────────────────────────── */
+a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--ink); }
+
+/* ── Админка ─────────────────────────────────────────────── */
 .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--line);
 }
 
 .admin-header h2 {
   margin: 0;
+  font-family: var(--font-head);
+  font-size: 1.55rem;
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .results {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  margin-top: 1.25rem;
+  gap: 1.5rem;
 }
 
 .result-row {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
-  gap: 0.35rem 0.75rem;
+  gap: 0.45rem 1rem;
   align-items: center;
 }
 
@@ -258,45 +447,41 @@ body {
 }
 
 .result-name {
-  font-weight: 600;
-  font-size: 1rem;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
 }
 
 .result-count {
   font-size: 0.85rem;
-  color: var(--muted);
+  color: var(--ink-3);
 }
 
 .result-bar-wrap {
   grid-column: 1;
-  height: 10px;
-  background: var(--border);
-  border-radius: 6px;
+  height: 8px;
+  background: var(--paper-2);
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .result-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-dim));
-  border-radius: 6px;
-  transition: width 0.5s ease;
-  min-width: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--red));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 3px;
 }
 
 .result-pct {
   grid-column: 2;
   grid-row: 1 / 3;
-  font-size: 1.4rem;
+  font-family: var(--font-head);
+  font-size: 1.85rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--blue);
   text-align: right;
   min-width: 3.5rem;
-}
-
-a {
-  color: var(--accent);
-}
-
-a:hover {
-  text-decoration: underline;
+  line-height: 1;
 }
