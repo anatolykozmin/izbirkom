@@ -348,8 +348,8 @@ body {
 /* ── Бюллетень ───────────────────────────────────────────── */
 .ballot { display: grid; gap: 0.8rem; }
 
-@media (min-width: 560px) {
-  .ballot { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 520px) {
+  .ballot { grid-template-columns: repeat(2, 1fr); }
 }
 
 .candidate {

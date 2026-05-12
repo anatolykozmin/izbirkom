@@ -33,9 +33,8 @@ from app.security import (
 log = logging.getLogger(__name__)
 
 CANDIDATES = (
-    {"id": 1, "name": "Раф на кокосовом", "note": ""},
-    {"id": 2, "name": "Раф на банановом", "note": ""},
-    {"id": 3, "name": "Против всех", "note": ""},
+    {"id": 1, "name": "Фёдор Жаркевич", "note": ""},
+    {"id": 2, "name": "Против всех", "note": ""},
 )
 
 COOKIE_NAME = "session"
