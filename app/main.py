@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from fastapi import BackgroundTasks, Depends, FastAPI, Form, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, Form, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -121,7 +121,6 @@ async def page_ballot(request: Request, session: AsyncSession = Depends(get_sess
 async def api_request_code(
     request: Request,
     body: RequestCodeBody,
-    background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_session),
 ):
     settings = get_settings()
@@ -129,8 +128,6 @@ async def api_request_code(
     code = generate_otp(settings.otp_length)
     code_hash = hash_otp(email, code, settings)
     expires = datetime.now(UTC) + timedelta(minutes=settings.otp_expire_minutes)
-
-    
 
     result = await session.execute(select(OTPChallenge).where(OTPChallenge.email == email))
     row = result.scalar_one_or_none()
@@ -142,7 +139,7 @@ async def api_request_code(
         session.add(OTPChallenge(email=email, code_hash=code_hash, expires_at=expires))
     await session.commit()
 
-    background_tasks.add_task(send_otp_email, email, code)
+    await send_otp_email(email, code)
     return {"ok": True, "message": "Код отправлен на указанный адрес."}
 
 

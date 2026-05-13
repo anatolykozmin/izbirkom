@@ -2,14 +2,14 @@ import re
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-# Допустимые форматы: 123456@edu.fa.ru или 1234567@edu.fa.ru
-_ALLOWED_EMAIL_RE = re.compile(r"^\d{6,7}@edu\.fa\.ru$", re.IGNORECASE)
+# Допустимые форматы: что-угодно@edu.fa.ru или что-угодно@fa.ru
+_ALLOWED_EMAIL_RE = re.compile(r"^.+@(edu\.fa\.ru|fa\.ru)$", re.IGNORECASE)
 
 
 def _validate_corp_email(value: str) -> str:
     if not _ALLOWED_EMAIL_RE.match(value.strip()):
         raise ValueError(
-            "Принимаются только корпоративные адреса вида 123456@edu.fa.ru или 1234567@edu.fa.ru"
+            "Принимаются только адреса @edu.fa.ru или @fa.ru"
         )
     return value.strip().lower()
 
