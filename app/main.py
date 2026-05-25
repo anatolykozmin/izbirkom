@@ -33,7 +33,7 @@ from app.security import (
 log = logging.getLogger(__name__)
 
 CANDIDATES = (
-    {"id": 1, "name": "Фёдор Жаркевич", "note": ""},
+    {"id": 1, "name": "Есина Гелия", "note": ""},
     {"id": 2, "name": "Против всех", "note": ""},
 )
 
